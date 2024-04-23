@@ -1,5 +1,6 @@
 import pygame, sys, random
-from Resours import archivoMapa, geometry
+from resources import archivoMapa
+from resources import geometry as gmt
 
 
 
@@ -20,7 +21,7 @@ sujetos = []
 cj = None
 enemies = []
 dead_enemies = 0
-difficulty = 1
+difficulty = 10
 
 class Person:
     def __init__(self, color, velocidad, pos:tuple, arma) -> None:
@@ -75,15 +76,15 @@ class Jugador(Person):
 
 
         else:
-            move = geometry.porEscalar(1/geometry.norma(direction)*self.velocidad, direction)
+            move = gmt.porEscalar(1/gmt.norma(direction)*self.velocidad, direction)
 
-        self.rect.center = geometry.suma(self.rect.center, move)
+        self.rect.center = gmt.suma(self.rect.center, move)
 
         s=False
         for i in range(len(currentMap.rects)):
             s = s or self.rect.colliderect(currentMap.rects[i])
             if s:
-                self.rect.center = geometry.suma(self.rect.center, geometry.porEscalar(-1,move))
+                self.rect.center = gmt.suma(self.rect.center, gmt.porEscalar(-1,move))
                 break
         
             
@@ -104,15 +105,15 @@ class Enemy(Person):
 
     def mover(self):
         #comprobar si ya está en el punto
-        vector = geometry.resta(self.pattern.current_point(), self.rect.center)
-        if geometry.norma(vector) < 10:
+        vector = gmt.resta(self.pattern.current_point(), self.rect.center)
+        if gmt.norma(vector) < 10:
             self.pattern.inicio = self.rect.center
             self.pattern.next_point()
             self.direction = self.get_direction()
             
         
-        aumento = geometry.porEscalar(self.velocidad * self.pattern.ciclo_move, self.direction)
-        self.rect.center = geometry.suma(self.pattern.inicio, aumento)
+        aumento = gmt.porEscalar(self.velocidad * self.pattern.ciclo_move, self.direction)
+        self.rect.center = gmt.suma(self.pattern.inicio, aumento)
         self.pattern.ciclo_move +=1
 
     def get_direction(self):
@@ -152,17 +153,12 @@ balas = []
 
 class Bullet:
     def __init__(self, tirador:object, destino:tuple):
-        self.img = pygame.image.load("Resours/bullet.png")
+        self.img = pygame.image.load("resources/bullet.png")
         self.rect = self.img.get_rect(center = tirador.rect.center)
         self.velocidad = tirador.arma.velocidad
         self.tirador = tirador
         self.inicio = tirador.rect.center
         
-        #desface si es enemigo:
-        multiplicador = 1
-        if isinstance(tirador, Enemy):
-            multiplicador = 10/difficulty
-
         self.direction = self.get_direction(destino)
         self.damage = tirador.arma.damage
         self.color = (249, 224, 53)
@@ -173,15 +169,17 @@ class Bullet:
         vectorNormal = direction(self.rect.center, destino)
         dispersion = self.tirador.arma.dispersion
         #Error de enemigo
+
         multiplicador = 1
         if isinstance(self.tirador, Enemy):
             multiplicador = 10 / difficulty
-        anguloError = random.randint( *geometry.porEscalar(multiplicador, (-dispersion, dispersion))   )
 
-        return geometry.rotacion(vectorNormal, anguloError)
+        anguloError = random.randint( *gmt.roundV((gmt.porEscalar(multiplicador, (-dispersion, dispersion))) )   )
+
+        return gmt.rotacion(vectorNormal, anguloError)
 
     def update(self):
-        self.rect.center = geometry.suma(self.inicio, geometry.porEscalar(self.ciclo * self.velocidad, self.direction))
+        self.rect.center = gmt.suma(self.inicio, gmt.porEscalar(self.ciclo * self.velocidad, self.direction))
         self.ciclo += 1
     
 
@@ -226,7 +224,7 @@ class Gun:
 
 #0: Periodo, 1: velocidad, 2: damage, 3: totalBalas, 4: cargadorMax, 5: rechargeTime, 6: dispersión
 pistol = [18, 20, 12, 40, 8, 120, 5]
-m16 = [14, 20, 20, 200, 20, 120, 0]
+m16 = [14, 20, 20, 200, 20, 120, 2]
 metralleta = [8, 20, 10, 200, 100, 300, 10]
 
 class Mapa:
@@ -408,8 +406,8 @@ class Text:
 
 
 def direction(start, end):
-    v = geometry.vector(start,end)
-    return geometry.porEscalar(1/geometry.norma(v), v)
+    v = gmt.vector(start,end)
+    return gmt.porEscalar(1/gmt.norma(v), v)
 
 
 def actualizarBalas():
@@ -507,13 +505,13 @@ while running:
     key = pygame.key.get_pressed()    
     dir = (0,0)
     if key[pygame.K_d]:
-        dir = geometry.suma(dir, (1,0))
+        dir = gmt.suma(dir, (1,0))
     if key[pygame.K_w]:
-        dir = geometry.suma(dir, (0,-1))
+        dir = gmt.suma(dir, (0,-1))
     if key[pygame.K_a]:
-        dir = geometry.suma(dir, (-1,0))
+        dir = gmt.suma(dir, (-1,0))
     if key[pygame.K_s]:
-        dir = geometry.suma(dir, (0,1))
+        dir = gmt.suma(dir, (0,1))
     
     cj.mover(dir, currentMap)
 
