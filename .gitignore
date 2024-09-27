@@ -1,0 +1,61 @@
+# Compiled object files, static and dynamic libs, etc.
+*.obj
+*.o
+*.exe
+*.dll
+*.lib
+*.so
+*.a
+*.out
+
+# Static Libs
+*.lib
+*.a
+*.la
+
+# For Visual Studio 2022
+.vscode/
+.vs/
+.vscode/*
+.vs/*
+
+
+# Build directories
+[Bb]uild/
+[Bb]in/
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+build/
+GeneratedFiles/
+
+# Backup & Temporary files
+*.bak
+*.tmp
+*.log
+*.sdf
+*.user
+*.ipch
+*.tlog
+*.lastbuildstate
+
+# Windows-specific files
+*.pdb
+*.idb
+*.ipch
+*.ilk
+*.obj
+*.log
+*.sbr
+*.tlog
+*.lastbuildstate
+*.cache
+*.pfx
+*.p12
+*.cer
+*.snk
+
+# SFML library
+include/
+lib/
