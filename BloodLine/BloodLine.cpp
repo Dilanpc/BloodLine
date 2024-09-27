@@ -2,9 +2,11 @@
 #include "Hud.hpp"
 #include "Background.hpp"
 
+#include <iostream>
 
 BloodLine::BloodLine()
 {
+	Gun::setBulletManager(&bulletManager);
 }
 
 
@@ -21,7 +23,9 @@ void BloodLine::start()
 	Background background;
 	background.setPosition(0, 0);
 
-	sf::Vector2<int8_t> direction(0, 0); // Usado para guardar inputs de teclas
+	sf::Vector2<int8_t> direction(0, 0); // keyword input
+	bool lclick = false;
+	sf::Vector2f mousePos;
 
 	while (m_window.isOpen())
 	{
@@ -48,6 +52,22 @@ void BloodLine::start()
 				if (event.key.code == sf::Keyboard::A) direction.x = 0;
 				if (event.key.code == sf::Keyboard::D) direction.x = 0;
 			}
+			
+			// Mouse
+			if (event.type == sf::Event::MouseButtonPressed)
+			{
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					lclick = true;
+				}
+			}
+			if (event.type == sf::Event::MouseButtonReleased)
+			{
+				if (event.mouseButton.button == sf::Mouse::Left)
+				{
+					lclick = false;
+				}
+			}
 		}
 
 
@@ -58,13 +78,26 @@ void BloodLine::start()
 		camera.setCenter(player.getPosition());
 		m_window.setView(camera);
 
+		// Mouse position
+		mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
+
+		if (lclick)
+		{
+			player.shoot(mousePos);
+		}
+
+		// Update
+		bulletManager.update();
+		player.aim(mousePos);
+
 
 		m_window.clear();
 		m_window.draw(background);
 		player.draw(m_window);
+		bulletManager.draw(m_window);
 		m_window.display();
 
-		sf::sleep(sf::milliseconds(1000 / 60) - clock.getElapsedTime()); // Configurado a 60 fps
+		sf::sleep(sf::milliseconds(1000 / 60) - clock.getElapsedTime()); // 60 fps
 		clock.restart();
 	}
 

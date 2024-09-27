@@ -15,6 +15,8 @@ protected:
 	Player player;
 	sf::View camera;
 
+	BulletManager bulletManager;
+
 
 
 public:

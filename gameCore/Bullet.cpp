@@ -1,17 +1,22 @@
 #include "Bullet.hpp"
 
 
-Bullet::Bullet(float x, float y, sf::Vector2f velocity)
+Bullet::Bullet(const sf::Vector2f& position, const sf::Vector2f& velocity, float distance)
+	: m_velocity(velocity)
 {
 	setRadius(5);
-	setFillColor(sf::Color::White);
-	setPosition(x, y);
-	m_velocity = velocity;
+	setFillColor(sf::Color::Yellow);
+	setPosition(position);
+
+	float speed = sqrt(velocity.x * velocity.x + velocity.y * velocity.y); // magnitude of the velocity
+	m_maxTimeAlive = distance / speed; // amount of frames to reach the distance
+
 }
 
 void Bullet::update()
 {
 	move(m_velocity);
+	m_timeAlive++;
 }
 
 
@@ -30,9 +35,15 @@ BulletManager::BulletManager()
 
 void BulletManager::update()
 {
-	for (Bullet& bullet : bullets)
+	for (auto it = bullets.begin(); it != bullets.end(); )
 	{
-		bullet.update();
+		it->update();
+		if (!it->isAlive()) {
+			it = bullets.erase(it);
+		}
+		else {
+			++it;
+		}
 	}
 }
 
@@ -44,7 +55,7 @@ void BulletManager::draw(sf::RenderWindow& window)
 	}
 }
 
-void BulletManager::addBullet(float x, float y, sf::Vector2f velocity)
+void BulletManager::addBullet(const sf::Vector2f& position, const sf::Vector2f& velocity, float distance)
 {
-	bullets.emplace_back(x, y, velocity);
+	bullets.emplace_back(position, velocity, distance);
 }
