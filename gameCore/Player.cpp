@@ -1,5 +1,7 @@
 #include "Player.hpp"
 
+#include <iostream>
+
 sf::RenderTexture Player::texture; // Textura temporal
 
 
@@ -12,8 +14,7 @@ Player::Player()
 	setTexture(texture.getTexture());
 	setOrigin(16, 16);
 
-	m_gun = new Gun(10, 10, 7, 350);
-	m_gun->setPosition(getPosition());
+	m_gun = new Gun(10, 10, 1, 50, 10, 100, sf::seconds(2)); // Temporal gun
 }
 
 Player::~Player()
@@ -34,7 +35,22 @@ void Player::aim(const sf::Vector2f& point)
 
 void Player::shoot(const sf::Vector2f& point)
 {
-	m_gun->shoot(point);
+	if (!m_reloading)
+		m_gun->shoot(point);
+}
+
+void Player::startReload()
+{
+	if (!m_reloading) {
+		m_reloading = true;
+		m_gun->startReload();
+	}
+}
+
+void Player::updateReload()
+{
+	if (m_gun->reload()) // Verify if the reload is done
+		m_reloading = false;
 }
 
 void Player::move(int x, int y)
@@ -47,6 +63,13 @@ void Player::move(int x, int y)
 
 }
 
+void Player::update(const sf::Vector2f& point)
+{
+	aim(point);
+	if (m_reloading)
+		updateReload();
+}
+
 void Player::setPosition(float x, float y)
 {
 	sf::Sprite::setPosition(x, y);
@@ -57,4 +80,5 @@ void Player::setGun(Gun* gun)
 {
 	delete m_gun;
 	m_gun = gun;
+	m_gun->setPosition(getPosition());
 }

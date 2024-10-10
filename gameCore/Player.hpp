@@ -11,8 +11,10 @@ private:
 public:
 	float speed = 3.0f;
 
-protected:
+private:
 	Gun* m_gun{};
+
+	bool m_reloading = false;
 
 
 public:
@@ -25,8 +27,12 @@ public:
 
 	void aim(const sf::Vector2f& point);
 	void shoot(const sf::Vector2f& point);
+	void startReload();
+	void updateReload(); // Verify if the reload is done
 
 	void move(int x, int y);
+
+	void update(const sf::Vector2f& point); // Aim and update reload
 	
 	void setPosition(float x, float y);
 	using sf::Sprite::getPosition;

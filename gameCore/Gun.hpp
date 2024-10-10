@@ -6,24 +6,34 @@
 class Gun : public sf::Sprite
 {
 public:
-	Gun(float speed, float damage, float fireRate, int range);
+	Gun(float speed, float damage, float fireRate, int range, unsigned int clipSize, unsigned int ammo, sf::Time reloadTime);
 
 public:
 	void shoot(sf::Vector2f point);
+	void startReload(); // Resets the reload clock
+	bool reload(); // Tries to reload, returns true if the reload is done
 
 	static void setBulletManager(BulletManager* bulletManager);
 
-public:
+protected:
 	float speed;
 	float damage;
 	float fireRate;
 	float range; // Distance the bullet can travel
 
-protected:
+	unsigned int clipSize;
+	unsigned int clip;
+	unsigned int ammo;
+
+	sf::Time m_reloadTime;
+
+private:
 	sf::RenderTexture texture; // Temp
 
 	static BulletManager* bulletManager;
 
-	sf::Clock m_clock;
+	sf::Clock m_clock; // Used to calculate the cooldown between shots
 	sf::Time m_cooldown;
+
+	sf::Clock m_reloadClock; // Used to calculate the time between reloads
 };

@@ -5,6 +5,7 @@ Bullet::Bullet(const sf::Vector2f& position, const sf::Vector2f& velocity, float
 	: m_velocity(velocity)
 {
 	setRadius(5);
+	setOrigin(getRadius(), getRadius());
 	setFillColor(sf::Color::Yellow);
 	setPosition(position);
 

@@ -1,27 +1,41 @@
 #include "BloodLine.hpp"
-#include "Hud.hpp"
-#include "Background.hpp"
 
 #include <iostream>
 
 BloodLine::BloodLine()
 {
-	Gun::setBulletManager(&bulletManager);
+}
+BloodLine::~BloodLine()
+{
+	delete player;
+	delete camera;
+	delete bulletManager;
+	delete hud;
 }
 
 
 
 void BloodLine::start()
 {
+	// Initialize variables
+	player = new Player();
+	camera = new sf::View();
+	bulletManager = new BulletManager();
+	hud = new Hud(windowWidth, windowHeight);
+	background = new Background();
+
+	Gun::setBulletManager(bulletManager);
+
+
 	m_window.create(sf::VideoMode(windowWidth, windowHeight), "BloodLine", sf::Style::Close);
-	camera.setSize(windowWidth, windowHeight);
+	camera->setSize(windowWidth, windowHeight);
 	sf::Clock clock;
 
+	player->setGun(new Gun(10, 10, 8, 800, 20, 200, sf::seconds(2)));
+	player->setPosition(100, 100);
+	
 
-	player.setPosition(100, 100);
-	Hud hud(windowWidth, windowHeight);
-	Background background;
-	background.setPosition(0, 0);
+	background->setPosition(0, 0);
 
 	sf::Vector2<int8_t> direction(0, 0); // keyword input
 	bool lclick = false;
@@ -42,6 +56,8 @@ void BloodLine::start()
 				if (event.key.code == sf::Keyboard::S) direction.y = 1;
 				if (event.key.code == sf::Keyboard::A) direction.x = -1;
 				if (event.key.code == sf::Keyboard::D) direction.x = 1;
+
+				if (event.key.code == sf::Keyboard::R) player->startReload();
 			}
 
 			// Key Released
@@ -72,29 +88,29 @@ void BloodLine::start()
 
 
 
-		player.move(direction.x, direction.y);
+		player->move(direction.x, direction.y);
 
 
-		camera.setCenter(player.getPosition());
-		m_window.setView(camera);
+		camera->setCenter(player->getPosition());
+		m_window.setView(*camera);
 
 		// Mouse position
 		mousePos = m_window.mapPixelToCoords(sf::Mouse::getPosition(m_window));
 
 		if (lclick)
 		{
-			player.shoot(mousePos);
+			player->shoot(mousePos);
 		}
 
 		// Update
-		bulletManager.update();
-		player.aim(mousePos);
+		bulletManager->update();
+		player->update(mousePos);
 
 
 		m_window.clear();
-		m_window.draw(background);
-		player.draw(m_window);
-		bulletManager.draw(m_window);
+		m_window.draw(*background);
+		player->draw(m_window);
+		bulletManager->draw(m_window);
 		m_window.display();
 
 		sf::sleep(sf::milliseconds(1000 / 60) - clock.getElapsedTime()); // 60 fps
