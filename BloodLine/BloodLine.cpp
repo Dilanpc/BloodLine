@@ -25,7 +25,9 @@ void BloodLine::start()
 	background = new Background();
 
 	Gun::setBulletManager(bulletManager);
-
+	
+	Hud::loadFont();
+	hud->setPlayer(player);
 
 	m_window.create(sf::VideoMode(windowWidth, windowHeight), "BloodLine", sf::Style::Close);
 	camera->setSize(windowWidth, windowHeight);
@@ -105,12 +107,14 @@ void BloodLine::start()
 		// Update
 		bulletManager->update();
 		player->update(mousePos);
+		hud->update();
 
 
 		m_window.clear();
 		m_window.draw(*background);
 		player->draw(m_window);
 		bulletManager->draw(m_window);
+		hud->draw(m_window);
 		m_window.display();
 
 		sf::sleep(sf::milliseconds(1000 / 60) - clock.getElapsedTime()); // 60 fps

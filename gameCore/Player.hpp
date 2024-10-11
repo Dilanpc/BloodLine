@@ -28,14 +28,16 @@ public:
 	void aim(const sf::Vector2f& point);
 	void shoot(const sf::Vector2f& point);
 	void startReload();
-	void updateReload(); // Verify if the reload is done
+	void updateReload(); // Check if the reload is done
 
 	void move(int x, int y);
 
-	void update(const sf::Vector2f& point); // Aim and update reload
+	void update(const sf::Vector2f& point); // Aims and updates the reload
 	
 	void setPosition(float x, float y);
 	using sf::Sprite::getPosition;
 
 	void setGun(Gun* gun);
+	Gun* getGun() const;
+	const Gun* const* _getGunDirection() const; // Returns the direction of internal gun pointer (for Hud) (&m_gun)
 };

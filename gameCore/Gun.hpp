@@ -27,6 +27,14 @@ protected:
 
 	sf::Time m_reloadTime;
 
+public:
+	unsigned int getClipSize() const;
+	void setClipSize(unsigned int clipSize);
+	unsigned int getClip() const;
+	void setClip(unsigned int clip);
+	unsigned int getAmmo() const;
+	void setAmmo(unsigned int ammo);
+
 private:
 	sf::RenderTexture texture; // Temp
 

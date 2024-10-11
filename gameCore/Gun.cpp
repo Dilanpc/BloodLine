@@ -66,3 +66,29 @@ void Gun::setBulletManager(BulletManager* bulletManager)
 {
 	Gun::bulletManager = bulletManager;
 }
+
+
+unsigned int Gun::getClipSize() const
+{
+	return clipSize;
+}
+void Gun::setClipSize(unsigned int clipSize)
+{
+	this->clipSize = clipSize;
+}
+unsigned int Gun::getClip() const
+{
+	return clip;
+}
+void Gun::setClip(unsigned int clip)
+{
+	this->clip = clip;
+}
+unsigned int Gun::getAmmo() const
+{
+	return ammo;
+}
+void Gun::setAmmo(unsigned int ammo)
+{
+	this->ammo = ammo;
+}

@@ -82,3 +82,13 @@ void Player::setGun(Gun* gun)
 	m_gun = gun;
 	m_gun->setPosition(getPosition());
 }
+
+Gun* Player::getGun() const
+{
+	return m_gun;
+}
+
+const Gun* const* Player::_getGunDirection() const
+{
+	return &m_gun;
+}
